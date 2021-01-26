@@ -40,5 +40,6 @@ dependencies {
 
     //Oneway
     implementation (name:'oneway-common-core-1.0.10',ext:'aar')
-
+    //wannuosili
+    implementation (name:'wannuosili_ad_2.2.0',ext:'aar')
 }

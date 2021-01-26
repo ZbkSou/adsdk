@@ -12,6 +12,15 @@
             android:hardwareAccelerated="true"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <provider
+            android:name="com.wannuosili.sdk.ad.component.WNFileProvider"
+            android:authorities="${applicationId}.WNFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/wn_file_paths" />
+        </provider>
+        <provider
             android:name="mobi.oneway.export.OWProvider"
             android:authorities="${applicationId}.OWProvider"
             android:exported="false"

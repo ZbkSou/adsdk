@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.zbk.adsdk.AdListenter;
 import com.zbk.adsdk.adspot.BaseAdspot;
 import com.zbk.adsdk.adspot.service.SplashService;
+import com.zbk.adsdk.listen.SplashAdListenter;
 
 import org.json.JSONObject;
 
@@ -27,9 +28,13 @@ public class OwSplashAdImpl implements SplashService {
 
     OWSplashAd owSplashAd;
 
+    public OwSplashAdImpl( String appId, String posId) {
+        this.owSplashAd = new OWSplashAd(posId);
+    }
+
     @Override
-    public void showSplashAD(Activity activity, ViewGroup adContainer, View skipContainer, String appId, String posId, int fetchDelay, AdListenter adListener) {
-        this.owSplashAd = new OWSplashAd(appId);
+    public void showSplashAD(Activity activity, ViewGroup adContainer, View skipContainer, int fetchDelay, SplashAdListenter adListener) {
+
         skipContainer.setVisibility(View.GONE);
         owSplashAd.show(activity,adContainer, new OWSplashAdListener() {
             @Override

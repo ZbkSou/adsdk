@@ -4,6 +4,8 @@ import android.content.Context;
 
 import mobi.oneway.export.Ad.OnewaySdk;
 
+
+
 /**
  * Created by ZBK on 2021-01-25.
  *
@@ -25,9 +27,9 @@ public class AdSdk {
         return instance;
     }
 
-    public  void init(Context context, String publishId){
-        OnewaySdk.configure( context,  publishId);
-        OnewaySdk.setDebugMode(boolean debugMode);
+    public  void init(Context context){
+        OnewaySdk.configure( context, AdTypeUrl.ONEWAY_PublishID);
+        OnewaySdk.setDebugMode(true);
     }
 
 

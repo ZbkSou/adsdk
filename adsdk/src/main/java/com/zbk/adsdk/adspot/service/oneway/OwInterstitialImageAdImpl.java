@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.zbk.adsdk.AdListenter;
 import com.zbk.adsdk.adspot.service.InterstitialAdService;
+import com.zbk.adsdk.listen.InterstitialAdListenter;
+import com.zbk.adsdk.listen.RewardAdListenter;
 
 import mobi.oneway.export.Ad.OWInterstitialAd;
 import mobi.oneway.export.Ad.OWInterstitialImageAd;
@@ -21,28 +23,30 @@ public class OwInterstitialImageAdImpl implements InterstitialAdService {
 
     //插屏视频广告对象
     private OWInterstitialImageAd owInterstitialImageAd;
-
+    private InterstitialAdListenter adListener;
 
     @Override
-    public void initAD(Activity activity, String placementId, AdListenter adListener) {
+    public void initAD(Activity activity, String placementId, InterstitialAdListenter adListener) {
+        this.adListener =adListener;
         //创建插屏视频事件监听器
         OWInterstitialImageAdListener owInterstitialAdListener = new OWInterstitialImageAdListener() {
             @Override
             public void onAdReady() {
                 // 广告已经准备就绪，可以调用 show() 方法播放广告
-                adListener.onADLoad();
+                adListener.onAdReady();
             }
 
             @Override
             public void onAdShow(String tag) {
                 // 广告已经开始播放
-                adListener.onAdShow(tag);
+                adListener.onADExpose();
+                adListener.onAdShow();
             }
 
             @Override
             public void onAdClick(String tag) {
                 // 广告点击事件
-                adListener.onAdClick(tag);
+                adListener.onAdClick();
             }
 
             @Override
@@ -57,12 +61,13 @@ public class OwInterstitialImageAdImpl implements InterstitialAdService {
                         adListener.onAdFailed("视频播放失败");
                         break;
                     case SKIPPED:
-                        adListener.onAdClickSkip(tag);
+                        adListener.onAdClickSkip();
                         break;
                     case COMPLETED:
-                        adListener.onAdClick(tag);
+                        adListener.onComplete();
                         break;
                 }
+                adListener.onAdClose();
             }
 
             @Override
@@ -86,6 +91,7 @@ public class OwInterstitialImageAdImpl implements InterstitialAdService {
     public void loadAD() {
         //请求广告
         if (owInterstitialImageAd != null) {
+            adListener.onAdLoad();
             owInterstitialImageAd.loadAd();
         }
     }
@@ -95,6 +101,7 @@ public class OwInterstitialImageAdImpl implements InterstitialAdService {
         //展示广告
         if (owInterstitialImageAd != null) {
             //判断广告是否准备好了
+
             return owInterstitialImageAd.isReady();
         }
         return false;

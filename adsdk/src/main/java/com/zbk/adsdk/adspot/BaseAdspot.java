@@ -14,8 +14,7 @@ public abstract class BaseAdspot implements Adspot {
 
     public Context mContext;
 
-    //广告监听
-    public AdListenter adListener;
+
     //广告请求类
     public AdService adService;
     //设备id
@@ -23,9 +22,8 @@ public abstract class BaseAdspot implements Adspot {
     //用户
     public String userId;
 
-    public BaseAdspot(Context mContext,AdListenter adListener, String deviceId, String userId) {
+    public BaseAdspot(Context mContext, String deviceId, String userId) {
         this.mContext = mContext;
-        this.adListener = adListener;
 
         this.deviceId = deviceId;
         this.userId = userId;

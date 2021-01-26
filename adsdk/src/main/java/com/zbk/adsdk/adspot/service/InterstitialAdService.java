@@ -3,6 +3,7 @@ package com.zbk.adsdk.adspot.service;
 import android.app.Activity;
 
 import com.zbk.adsdk.AdListenter;
+import com.zbk.adsdk.listen.InterstitialAdListenter;
 
 /**
  * Created by ZBK on 2021-01-26.
@@ -10,7 +11,7 @@ import com.zbk.adsdk.AdListenter;
  * @function
  */
 public interface InterstitialAdService {
-    void initAD (Activity activity, String placementId, AdListenter adListener);
+    void initAD (Activity activity, String placementId, InterstitialAdListenter adListener);
     void loadAD();
     boolean isReady();
 

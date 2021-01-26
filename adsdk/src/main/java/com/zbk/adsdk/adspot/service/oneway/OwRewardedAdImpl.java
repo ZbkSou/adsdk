@@ -3,7 +3,8 @@ package com.zbk.adsdk.adspot.service.oneway;
 import android.app.Activity;
 
 import com.zbk.adsdk.AdListenter;
-import com.zbk.adsdk.adspot.service.RewardedService;
+import com.zbk.adsdk.adspot.service.RewardAdService;
+import com.zbk.adsdk.listen.RewardAdListenter;
 
 import mobi.oneway.export.Ad.OWRewardedAd;
 import mobi.oneway.export.AdListener.OWRewardedAdListener;
@@ -15,31 +16,31 @@ import mobi.oneway.export.enums.OnewaySdkError;
  *
  * @function
  */
-public class OwRewardedAdImpl implements RewardedService {
+public class OwRewardedAdImpl implements RewardAdService {
     private OWRewardedAd owRewardedAd;
-
+    private RewardAdListenter adListener;
     @Override
-    public void initAD(Activity activity, String placementId, AdListenter adListener) {
-
+    public void initAD(Activity activity, String placementId, RewardAdListenter adListener) {
+        this.adListener =adListener;
         //创建激励视频事件监听器
         OWRewardedAdListener owRewardedAdListener = new OWRewardedAdListener() {
             @Override
             public void onAdReady() {
                 // 广告已经准备就绪，可以调用 show() 方法播放广告
-                adListener.onADLoad();
+                adListener.onAdReady();
             }
 
             @Override
             public void onAdShow(String tag) {
                 // 广告已经开始播放
-                adListener.onAdShow(tag);
+                adListener.onAdShow();
             }
 
             @Override
             public void onAdClick(String tag) {
                 // 广告点击事件
 
-                adListener.onAdClick(tag);
+                adListener.onAdClick();
             }
 
             @Override
@@ -53,7 +54,7 @@ public class OwRewardedAdImpl implements RewardedService {
                         adListener.onAdFailed("视频播放失败");
                         break;
                     case SKIPPED:
-                        adListener.onAdClickSkip(tag);
+                        adListener.onAdClose();
                         break;
 
                 }
@@ -69,10 +70,10 @@ public class OwRewardedAdImpl implements RewardedService {
                         adListener.onAdFailed("视频播放失败");
                         break;
                     case SKIPPED:
-                        adListener.onAdClickSkip(tag);
+                        adListener.onAdClose();
                         break;
                     case COMPLETED:
-                        adListener.onAdReward();
+                        adListener.onReward();
                         break;
                 }
             }
@@ -93,6 +94,7 @@ public class OwRewardedAdImpl implements RewardedService {
     public void loadAD() {
         //请求广告
         if (owRewardedAd != null) {
+            this.adListener.onAdLoad();
             owRewardedAd.loadAd();
         }
     }

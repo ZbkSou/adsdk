@@ -23,6 +23,9 @@ import android.widget.TextView;
 import com.zbk.adsdk.AdListenter;
 import com.zbk.adsdk.AdService;
 import com.zbk.adsdk.AdTypeUrl;
+import com.zbk.adsdk.adspot.service.SplashService;
+import com.zbk.adsdk.adspot.service.oneway.*;
+import com.zbk.adsdk.listen.SplashAdListenter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,9 +47,13 @@ import okhttp3.Response;
  */
 public class SplashAdspot extends BaseAdspot {
 
-    private SplashAD splashAD;
+    private SplashService splashAD;
+
+    //三方广告
+    private SplashAdListenter splashAdListener;
     private TextView skipView;
-    private SplashADListener gdtAdListener;
+    //对外广告监听
+    public SplashAdListenter adListener;
     private CountDownTimer timer;
     //   显示广告容器
     public ViewGroup adContainer;
@@ -105,9 +112,10 @@ public class SplashAdspot extends BaseAdspot {
         }
     };
 
-    public SplashAdspot(Context mContext, ViewGroup adContainer, AdListenter adListener, TextView skipView, String deviceId, String userId) {
-        super(mContext, adListener, deviceId, userId);
+    public SplashAdspot(Context mContext, ViewGroup adContainer, SplashAdListenter adListener, TextView skipView, String deviceId, String userId) {
+        super(mContext,  deviceId, userId);
         this.adContainer = adContainer;
+        this.adListener = adListener;
         this.skipView = skipView;
         adService = new AdService(this, mContext);
 
@@ -115,7 +123,7 @@ public class SplashAdspot extends BaseAdspot {
 
     @Override
     public void fetchAd() {
-        adListener.onRequestAd();
+
         adService.requestAd(AdTypeUrl.splashad, AdTypeUrl.splashadKey, deviceId, userId);
     }
 
@@ -125,23 +133,18 @@ public class SplashAdspot extends BaseAdspot {
         String page_style = null;
         String banner_height = null;
         try {
-            adListener.onRequestedAd();
+
             type = jsonData.getString("type");
-            try {
-                String bucket = jsonData.getString("bucket");
-                adListener.onAdBucket(AdTypeUrl.splashadKey+"_"+bucket);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
             adService.reportPull(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
             if ("2".equals(type)) {
 
-                gdtAdListener = generatedGDTListener();
+                 splashAdListener = generatedListener();
                 if (Build.VERSION.SDK_INT >= 23) {
                     checkAndRequestPermission();
                 } else {
                     // 如果是Android6.0以下的机器，默认在安装时获得了所有权限，可以直接调用SDK
-                    fetchSplashAD((Activity) mContext, adContainer, skipView, AdTypeUrl.GDTAPPID, getPosId(), gdtAdListener, 0);
+                    fetchSplashAD((Activity) mContext, adContainer, skipView, getAppId(), getPosId(), "OneWay",splashAdListener, 0);
                 }
             } else if ("1".equals(type)) {
                 image = jsonData.getString("img");
@@ -175,7 +178,7 @@ public class SplashAdspot extends BaseAdspot {
                             if (adListener != null) {
                                 //app 内部打开
                                 timer.cancel();
-                                adListener.onAdGoAppWeb(target, title);
+
                             }
                         }
                     }
@@ -221,7 +224,7 @@ public class SplashAdspot extends BaseAdspot {
         }
         // 权限都已经有了，那么直接调用SDK
         if (lackedPermission.size() == 0) {
-            fetchSplashAD((Activity) mContext, adContainer, skipView, AdTypeUrl.GDTAPPID, getPosId(), gdtAdListener, 0);
+            fetchSplashAD((Activity) mContext, adContainer, skipView, getAppId(), getPosId(), "OneWay", splashAdListener, 0);
         } else {
             // 请求所缺少的权限，在onRequestPermissionsResult中再看是否获得权限，如果获得权限就可以调用SDK，否则不要调用SDK。
             String[] requestPermissions = new String[lackedPermission.size()];
@@ -229,9 +232,13 @@ public class SplashAdspot extends BaseAdspot {
             ((Activity) mContext).requestPermissions(requestPermissions, 1024);
         }
     }
+    private String getAppId() {
+        return  "";
+    }
+
 
     private String getPosId() {
-        return AdTypeUrl.splashAPPID;
+        return AdTypeUrl.OW_Splash;
     }
 
     /**
@@ -242,42 +249,55 @@ public class SplashAdspot extends BaseAdspot {
      * @param skipContainer 自定义的跳过按钮：传入该view给SDK后，SDK会自动给它绑定点击跳过事件。SkipView的样式可以由开发者自由定制，其尺寸限制请参考activity_splash.xml或者接入文档中的说明。
      * @param appId         应用ID
      * @param posId         广告位ID
-     * @param adListener    广告状态监听器
+     * @param adType          广告主id
+     * @param splashAdListener    广告状态监听器
      * @param fetchDelay    拉取广告的超时时长：取值范围[3000, 5000]，设为0表示使用广点通SDK默认的超时时长。
      */
     private void fetchSplashAD(Activity activity, ViewGroup adContainer, View skipContainer,
-                               String appId, String posId, SplashADListener adListener, int fetchDelay) {
-        splashAD = new SplashAD(activity, skipContainer, appId, posId, adListener, fetchDelay);
-        splashAD.fetchAndShowIn(adContainer);
+                               String appId, String posId,String adType, SplashAdListenter splashAdListener, int fetchDelay) {
+        switch(adType){
+            case "OneWay":
+                splashAD = new OwSplashAdImpl( appId, posId);
+                break;
+        }
+
+        splashAD.showSplashAD(activity,adContainer, skipContainer,fetchDelay, splashAdListener );
     }
 
-    private SplashADListener generatedGDTListener() {
+    private SplashAdListenter generatedListener() {
 
-        return new SplashADListener() {
-            @Override
-            public void onADDismissed() {
-                Log.i("AD_DEMO", "onADDismissed");
-                adListener.onAdDismiss();
-            }
+        return new SplashAdListenter() {
+
+
 
             @Override
-            public void onNoAD(AdError adError) {
-                Log.i("AD_DEMO", "onNoAD");
-                adListener.onAdFailed("onNoAD");
-                adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
-            }
-
-            @Override
-            public void onADPresent() {
-                Log.i("AD_DEMO", "SplashADPresent");
-                adService.reportShow(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+            public void onAdShow(String type) {
                 adListener.onAdShow(type);
             }
 
             @Override
-            public void onADClicked() {
+            public void onAdExposure(String type) {
+                Log.i("AD_DEMO", "onADExposure");
+                adService.reportExposure(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+                adListener.onAdExposure(type);
+            }
+
+            @Override
+            public void onAdClick(String type) {
                 adService.reportClick(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
                 adListener.onAdClick(type);
+            }
+
+            @Override
+            public void onAdClickSkip(String tag) {
+                adListener.onAdClickSkip(tag);
+            }
+
+            @Override
+            public void onAdFailed(String err) {
+                Log.i("AD_DEMO", "onNoAD");
+                adListener.onAdFailed("onNoAD");
+                adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
             }
 
             @Override
@@ -287,11 +307,12 @@ public class SplashAdspot extends BaseAdspot {
             }
 
             @Override
-            public void onADExposure() {
-                Log.i("AD_DEMO", "onADExposure");
-                adService.reportExposure(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
-                adListener.onAdExposure(type);
+            public void onAdDismiss() {
+                Log.i("AD_DEMO", "onADDismissed");
+                adListener.onAdDismiss();
             }
+
+
         };
 
     }

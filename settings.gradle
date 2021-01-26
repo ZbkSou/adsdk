@@ -1,0 +1,3 @@
+include ':adsdk'
+include ':app'
+rootProject.name = "adsdk"

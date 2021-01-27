@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+>
+
+    <ImageView
+        android:id="@+id/splash_holder"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitCenter"
+        android:background="#ffffff"
+        android:src="@drawable/ic_launcher_foreground" />
+
+    <RelativeLayout
+        android:id="@+id/splash_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="120dp"
+        android:background="#009fc3" />
+
+    <TextView android:id="@+id/btn_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:text="跳过" />
+
+</RelativeLayout>

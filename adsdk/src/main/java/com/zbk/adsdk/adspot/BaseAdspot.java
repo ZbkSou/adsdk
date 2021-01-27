@@ -17,15 +17,17 @@ public abstract class BaseAdspot implements Adspot {
 
     //广告请求类
     public AdService adService;
-    //设备id
-    public String deviceId;
-    //用户
-    public String userId;
 
-    public BaseAdspot(Context mContext, String deviceId, String userId) {
+    //广告位
+    public String placementId;
+
+    public BaseAdspot(Context mContext, String placementId) {
         this.mContext = mContext;
 
-        this.deviceId = deviceId;
-        this.userId = userId;
+        this.placementId = placementId;
     }
+
+
+
+
 }

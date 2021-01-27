@@ -54,6 +54,7 @@ public class OwSplashAdImpl implements SplashService {
             @Override
             public void onAdFinish() {
                 // 开屏广告成功展示完毕，有可能是用户按了跳过按钮，也可能是展示完毕自动关闭
+                adListener.onAdExposure("ow");
                 adListener.onAdDismiss();
             }
 

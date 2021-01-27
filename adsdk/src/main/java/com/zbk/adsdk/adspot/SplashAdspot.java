@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.zbk.adsdk.AdListenter;
+import com.zbk.adsdk.AdSdk;
 import com.zbk.adsdk.AdService;
 import com.zbk.adsdk.AdTypeUrl;
 import com.zbk.adsdk.adspot.service.SplashService;
@@ -78,10 +78,10 @@ public class SplashAdspot extends BaseAdspot {
                         @Override
                         public void onTick(long l) {
                             if (l >= 3000) {
-                                adService.reportExposure(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//                                adService.reportExposure(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
                             }
                             if (adListener != null) {
-                                adListener.onADTick(l); //广告展现计时
+                                adListener.onAdTick(l); //广告展现计时
                             }
 
                         }
@@ -100,7 +100,7 @@ public class SplashAdspot extends BaseAdspot {
                         @Override
                         public void onClick(View view) {
                             timer.cancel();
-                            adService.reportSkip(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//                            adService.reportSkip(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
                             if (adListener != null) {
                                 adListener.onAdDismiss(); //广告展示完毕
                             }
@@ -112,8 +112,8 @@ public class SplashAdspot extends BaseAdspot {
         }
     };
 
-    public SplashAdspot(Context mContext, ViewGroup adContainer, SplashAdListenter adListener, TextView skipView, String deviceId, String userId) {
-        super(mContext,  deviceId, userId);
+    public SplashAdspot(Context mContext, ViewGroup adContainer, TextView skipView, String placementId, SplashAdListenter adListener) {
+        super(mContext,  placementId);
         this.adContainer = adContainer;
         this.adListener = adListener;
         this.skipView = skipView;
@@ -124,7 +124,7 @@ public class SplashAdspot extends BaseAdspot {
     @Override
     public void fetchAd() {
 
-        adService.requestAd(AdTypeUrl.splashad, AdTypeUrl.splashadKey, deviceId, userId);
+        adService.requestAd(AdTypeUrl.splashad, AdSdk.getSingleton().getAppID(),  placementId);
     }
 
     @Override
@@ -136,7 +136,7 @@ public class SplashAdspot extends BaseAdspot {
 
             type = jsonData.getString("type");
 
-            adService.reportPull(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//            adService.reportPull(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
             if ("2".equals(type)) {
 
                  splashAdListener = generatedListener();
@@ -164,7 +164,7 @@ public class SplashAdspot extends BaseAdspot {
                     @Override
                     public void onClick(View view) {
 
-                        adService.reportClick(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//                        adService.reportClick(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
                         if (!"webview".equals(openin)) {
                             timer.cancel();
                             //app 外部打开
@@ -197,8 +197,8 @@ public class SplashAdspot extends BaseAdspot {
 
     @Override
     public void adFailed() {
-        adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
-        adListener.onAdFailed(null); //广告展示失败
+//        adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+        adListener.onAdFailed("广告请求失败");
     }
 
 
@@ -232,6 +232,8 @@ public class SplashAdspot extends BaseAdspot {
             ((Activity) mContext).requestPermissions(requestPermissions, 1024);
         }
     }
+
+    //提前留出接口返回数据
     private String getAppId() {
         return  "";
     }
@@ -278,13 +280,13 @@ public class SplashAdspot extends BaseAdspot {
             @Override
             public void onAdExposure(String type) {
                 Log.i("AD_DEMO", "onADExposure");
-                adService.reportExposure(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//                adService.reportExposure(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
                 adListener.onAdExposure(type);
             }
 
             @Override
             public void onAdClick(String type) {
-                adService.reportClick(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//                adService.reportClick(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
                 adListener.onAdClick(type);
             }
 
@@ -297,13 +299,13 @@ public class SplashAdspot extends BaseAdspot {
             public void onAdFailed(String err) {
                 Log.i("AD_DEMO", "onNoAD");
                 adListener.onAdFailed("onNoAD");
-                adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//                adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
             }
 
             @Override
-            public void onADTick(long l) {
+            public void onAdTick(long l) {
                 Log.i("AD_DEMO", "onADTick" + l);
-                adListener.onADTick(l);
+                adListener.onAdTick(l);
             }
 
             @Override
@@ -333,7 +335,7 @@ public class SplashAdspot extends BaseAdspot {
             public void onFailure(Call call, IOException e) {
                 Log.d("HttpUtil", "onFailure: ");
                 adListener.onAdFailed(null);
-                adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
+//                adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "kaiping", "xiaoyi");
             }
 
             @Override

@@ -2,19 +2,14 @@ package com.zbk.adsdk.adspot;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.zbk.adsdk.AdListenter;
+import com.zbk.adsdk.AdSdk;
 import com.zbk.adsdk.AdService;
 import com.zbk.adsdk.AdTypeUrl;
 import com.zbk.adsdk.adspot.service.RewardAdService;
 import com.zbk.adsdk.adspot.service.oneway.*;
 import com.zbk.adsdk.listen.RewardAdListenter;
-import com.zbk.adsdk.listen.SplashAdListenter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,16 +35,18 @@ public class RewardAdspot extends BaseAdspot {
     private String type;
     private boolean adLoaded ;
 
-    public RewardAdspot(Context mContext,  String deviceId, String userId) {
-        super(mContext,  deviceId, userId);
+    public RewardAdspot(Context mContext,   String placementId,RewardAdListenter listenter) {
 
+        super(mContext,   placementId);
+
+        this.adListener = listenter;
         adService = new AdService(this, mContext);
 
     }
 
     @Override
     public void fetchAd() {
-        adService.requestAd(AdTypeUrl.inspireadad, AdTypeUrl.inspireadKey, deviceId, userId);
+        adService.requestAd(AdTypeUrl.inspireadad, AdSdk.getSingleton().getAppID(),  placementId);
     }
 
     @Override
@@ -57,7 +54,7 @@ public class RewardAdspot extends BaseAdspot {
 
         try {
             type = jsonData.getString("type");
-            adService.reportPull(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
+//            adService.reportPull(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
             if ("2".equals(type)) {
                 //只处理2的情况，后续其他情况需要再else if 添加
                 rewardAdListenter = generatedListener();
@@ -67,6 +64,7 @@ public class RewardAdspot extends BaseAdspot {
             }
             adLoaded =false;
             rewardAdService.initAD((Activity) mContext,AdTypeUrl.OW_Reward,rewardAdListenter);
+            loadAD();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -74,7 +72,7 @@ public class RewardAdspot extends BaseAdspot {
 
     }
 
-    public void loadAD(){
+    private void loadAD(){
 
         if(rewardAdService!=null){
             rewardAdService.loadAD();
@@ -87,14 +85,15 @@ public class RewardAdspot extends BaseAdspot {
             rewardAdService.show((Activity) mContext,type);
         }
     }
-    public void isReady(){
+    public boolean isReady(){
         if(rewardAdService!=null){
 
-            rewardAdService.isReady();
+         return    rewardAdService.isReady();
         }
+        return false;
     }
 
-    public void destoryAD(){
+    public void destory(){
         if(rewardAdService!=null){
             rewardAdService.destory();
         }
@@ -117,15 +116,15 @@ public class RewardAdspot extends BaseAdspot {
             @Override
             public void onAdShow() {
                 Log.i("AD_DEMO", "SplashADPresent");
-                adService.reportShow(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
+//                adService.reportShow(AdTypeUrl.splashadKey, placementId,  "inspiread", "xiaoyi");
                 adListener.onAdShow();
             }
 
             @Override
-            public void onADExpose() {
+            public void onAdExpose() {
                 Log.i("AD_DEMO", "onADExposure");
-                adService.reportExposure(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
-                adListener.onADExpose();
+//                adService.reportExposure(AdTypeUrl.splashadKey, placementId,  "inspiread", "xiaoyi");
+                adListener.onAdExpose();
             }
 
             @Override
@@ -137,7 +136,7 @@ public class RewardAdspot extends BaseAdspot {
             @Override
             public void onAdClick() {
                 Log.i("AD_DEMO", "onADClick");
-                adService.reportClick(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
+//                adService.reportClick(AdTypeUrl.splashadKey, placementId,  "inspiread", "xiaoyi");
 
                 adListener.onAdClick();
             }
@@ -152,14 +151,14 @@ public class RewardAdspot extends BaseAdspot {
             public void onAdClose() {
                 Log.i("AD_DEMO", "onADClose");
                 adListener.onAdClose();
-                adService.reportSkip(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
+//                adService.reportSkip(AdTypeUrl.splashadKey, placementId,  "inspiread", "xiaoyi");
             }
 
             @Override
             public void onAdFailed(String adError) {
                 Log.i("AD_DEMO", "onError" + adError);
                 adListener.onAdFailed(adError);
-                adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
+//                adService.reportFail(AdTypeUrl.splashadKey, placementId,  "inspiread", "xiaoyi");
             }
 
             @Override
@@ -175,7 +174,8 @@ public class RewardAdspot extends BaseAdspot {
 
     @Override
     public void adFailed() {
-        adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
+        adListener.onAdFailed("广告请求失败");
+//        adService.reportFail(AdTypeUrl.splashadKey, deviceId, userId, "inspiread", "xiaoyi");
     }
 
 

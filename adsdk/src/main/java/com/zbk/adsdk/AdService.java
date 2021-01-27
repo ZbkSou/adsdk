@@ -31,20 +31,19 @@ public class AdService {
      * 请求广告
      *
      * @param AdTypeUrl
-     * @param code
-     * @param deviceId
-     * @param userId
+     * @param appid
+     * @param placementId
      */
-    public void requestAd(String AdTypeUrl, final String code, final String deviceId, final String userId) {
+    public void requestAd(String AdTypeUrl, final String appid,  final String placementId) {
 
         JSONObject requestBody = new JSONObject();
         try {
-            requestBody.put("deviceId", deviceId);
-            requestBody.put("userId", userId);
+
+            requestBody.put("placementId", placementId);
             requestBody.put("ostype", "android");
             requestBody.put("version", DeviceInfoUtil.getAppVersionName(context));
             requestBody.put("screen", DeviceInfoUtil.getDisplay(context));
-            requestBody.put("code", code);
+            requestBody.put("code", appid);
         } catch (JSONException e) {
             e.printStackTrace();
         }

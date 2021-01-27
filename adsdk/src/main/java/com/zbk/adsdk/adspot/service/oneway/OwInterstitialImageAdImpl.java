@@ -2,14 +2,10 @@ package com.zbk.adsdk.adspot.service.oneway;
 
 import android.app.Activity;
 
-import com.zbk.adsdk.AdListenter;
 import com.zbk.adsdk.adspot.service.InterstitialAdService;
 import com.zbk.adsdk.listen.InterstitialAdListenter;
-import com.zbk.adsdk.listen.RewardAdListenter;
 
-import mobi.oneway.export.Ad.OWInterstitialAd;
 import mobi.oneway.export.Ad.OWInterstitialImageAd;
-import mobi.oneway.export.AdListener.OWInterstitialAdListener;
 import mobi.oneway.export.AdListener.OWInterstitialImageAdListener;
 import mobi.oneway.export.enums.OnewayAdCloseType;
 import mobi.oneway.export.enums.OnewaySdkError;
@@ -39,7 +35,7 @@ public class OwInterstitialImageAdImpl implements InterstitialAdService {
             @Override
             public void onAdShow(String tag) {
                 // 广告已经开始播放
-                adListener.onADExpose();
+                adListener.onAdExpose();
                 adListener.onAdShow();
             }
 

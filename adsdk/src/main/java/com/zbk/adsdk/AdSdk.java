@@ -2,6 +2,8 @@ package com.zbk.adsdk;
 
 import android.content.Context;
 
+import com.zbk.adsdk.adspot.service.oneway.OnewayConfig;
+
 import mobi.oneway.export.Ad.OnewaySdk;
 
 
@@ -17,6 +19,7 @@ public class AdSdk {
     private volatile static AdSdk instance; //声明成 volatile
     private AdSdk (){}
 
+    private String AppID;
     public static AdSdk getSingleton() {
         if (instance == null) {
             synchronized (AdSdk.class) {
@@ -28,10 +31,14 @@ public class AdSdk {
         return instance;
     }
 
-    public  void init(Context context){
-        OnewaySdk.configure( context, AdTypeUrl.ONEWAY_PublishID);
-        OnewaySdk.setDebugMode(true);
+    public  void init(Context context,String AppID){
+        this.AppID = AppID;
+        OnewayConfig.configure( context, AdTypeUrl.ONEWAY_PublishID);
+        OnewayConfig.setDebugMode(true);
     }
 
 
+    public String getAppID() {
+        return AppID;
+    }
 }

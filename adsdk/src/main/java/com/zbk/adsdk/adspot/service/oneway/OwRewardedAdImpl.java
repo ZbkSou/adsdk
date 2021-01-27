@@ -2,7 +2,6 @@ package com.zbk.adsdk.adspot.service.oneway;
 
 import android.app.Activity;
 
-import com.zbk.adsdk.AdListenter;
 import com.zbk.adsdk.adspot.service.RewardAdService;
 import com.zbk.adsdk.listen.RewardAdListenter;
 
@@ -34,7 +33,7 @@ public class OwRewardedAdImpl implements RewardAdService {
             public void onAdShow(String tag) {
                 // 广告已经开始播放
                 adListener.onAdShow();
-                adListener.onADExpose();
+                adListener.onAdExpose();
             }
 
             @Override

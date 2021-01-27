@@ -4,15 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".adactivity.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical"
+        android:fadingEdge="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+            <Button
+                android:id="@+id/slashAD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="开屏广告" />
+
+            <Button
+                android:id="@+id/interstitialAD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="插屏广告" />
+
+            <Button
+                android:id="@+id/nativeRecyclerAD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="原生信息流广告" />
+
+
+            <Button
+                android:id="@+id/rewardVideoAd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="激励视频" />
+
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

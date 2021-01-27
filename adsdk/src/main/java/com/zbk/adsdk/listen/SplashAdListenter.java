@@ -22,7 +22,7 @@ public interface SplashAdListenter {
     public void onAdFailed(String err);
 
     //广告倒计时
-    public void onADTick(long l);
+    public void onAdTick(long l);
 
     //广告消失
     public void onAdDismiss();

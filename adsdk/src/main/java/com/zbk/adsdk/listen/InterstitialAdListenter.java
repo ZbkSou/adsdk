@@ -15,7 +15,7 @@ public interface InterstitialAdListenter {
     public void onAdShow();
 
 
-    public void onADExpose();
+    public void onAdExpose();
 
 
 

@@ -16,7 +16,7 @@ public interface RewardAdListenter {
     public void onAdShow();
 
 
-    public void onADExpose();
+    public void onAdExpose();
 
 
     public void onReward();

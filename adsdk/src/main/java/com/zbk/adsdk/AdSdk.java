@@ -9,7 +9,8 @@ import mobi.oneway.export.Ad.OnewaySdk;
 /**
  * Created by ZBK on 2021-01-25.
  *
- *
+ * sdk
+ *  oei
  * @function
  */
 public class AdSdk {

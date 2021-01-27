@@ -34,6 +34,7 @@ public class OwRewardedAdImpl implements RewardAdService {
             public void onAdShow(String tag) {
                 // 广告已经开始播放
                 adListener.onAdShow();
+                adListener.onADExpose();
             }
 
             @Override
@@ -74,6 +75,7 @@ public class OwRewardedAdImpl implements RewardAdService {
                         break;
                     case COMPLETED:
                         adListener.onReward();
+                        adListener.onVideoComplete();
                         break;
                 }
             }

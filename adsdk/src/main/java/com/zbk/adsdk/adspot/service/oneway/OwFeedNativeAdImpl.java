@@ -26,13 +26,14 @@ public class OwFeedNativeAdImpl implements FeedNativeAdService {
     private OWFeedAd owFeedAd;
     private FeedNativeAdListenter adListener;
     @Override
-    public void initAD(Activity activity, String placementId,int count) {
+    public void initAD(Activity activity, String placementId,FeedNativeAdListenter adListener) {
+        this.adListener  = adListener;
         owFeedAd = new OWFeedAd(activity,placementId);
     }
 
     @Override
-    public void load(FeedNativeAdListenter adListener) {
-        this.adListener  = adListener;
+    public void load(int count) {
+
         owFeedAd.load(new OWFeedAdListener() {
             @Override
             public void onError(OnewaySdkError onewaySdkError, String msg) {

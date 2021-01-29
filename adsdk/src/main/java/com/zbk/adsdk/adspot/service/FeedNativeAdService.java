@@ -11,7 +11,7 @@ import com.zbk.adsdk.listen.FeedNativeAdListenter;
  * @function
  */
 public interface FeedNativeAdService {
-    void initAD (Activity activity, String placementId,int count);
+    void initAD (Activity activity, String placementId,FeedNativeAdListenter adListener);
 
-    void load(FeedNativeAdListenter adListener);
+    void load(int count);
 }
